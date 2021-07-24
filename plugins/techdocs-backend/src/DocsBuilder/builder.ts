@@ -221,6 +221,9 @@ export class DocsBuilder {
 
     // Invalidate the cache for any published objects.
     if (this.cache && published && published?.objects?.length) {
+      this.logger.debug(
+        `Invalidating ${published.objects.length} cache objects`,
+      );
       await this.cache.invalidateMultiple(published.objects);
     }
 
