@@ -71,7 +71,7 @@ export const ComponentAccordion = ({
       )}
       <Accordion
         expanded={isExpanded}
-        onChange={(e: any, expanded: boolean) => setIsExpanded(expanded)}
+        onChange={(_e: any, expanded: boolean) => setIsExpanded(expanded)}
       >
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           {Settings && (

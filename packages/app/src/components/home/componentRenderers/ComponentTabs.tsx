@@ -32,10 +32,10 @@ export const ComponentTabs = ({
 }) => {
   const [value, setValue] = React.useState(0);
 
-  const handleChange = (event: any, newValue: number) => {
+  const handleChange = (_event: any, newValue: number) => {
     setValue(newValue);
   };
-  const Component = tabs.find((t, idx) => idx === value)?.Component;
+  const Component = tabs.find((_t, idx) => idx === value)?.Component;
 
   return (
     <InfoCard title={title}>
