@@ -6,6 +6,7 @@
 /// <reference types="react" />
 
 import { BackstagePlugin } from '@backstage/core-plugin-api';
+import { LazyExoticComponent } from 'react';
 import { ReactNode } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
 
@@ -27,7 +28,32 @@ export const homePlugin: BackstagePlugin<
 // Warning: (ae-missing-release-tag) "RandomJokeHomePageComponent" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
-export const RandomJokeHomePageComponent: () => JSX.Element;
+export const RandomJokeHomePageComponent: (
+  props: {
+    Renderer?:
+      | ((
+          props: {
+            title: string;
+          } & {
+            Content: LazyExoticComponent<(props: any) => JSX.Element>;
+            Actions?:
+              | LazyExoticComponent<(props: any) => JSX.Element>
+              | undefined;
+            Settings?:
+              | LazyExoticComponent<(props: any) => JSX.Element>
+              | undefined;
+            ContextProvider?:
+              | LazyExoticComponent<(props: any) => JSX.Element>
+              | undefined;
+          },
+        ) => JSX.Element)
+      | undefined;
+  } & {
+    title?: string | undefined;
+  } & {
+    defaultCategory?: 'any' | 'programming' | undefined;
+  },
+) => JSX.Element;
 
 // Warning: (ae-missing-release-tag) "SettingsModal" is exported by the package, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
