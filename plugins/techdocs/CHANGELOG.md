@@ -1,5 +1,13 @@
 # @backstage/plugin-techdocs
 
+## 0.10.2
+
+### Patch Changes
+
+- 2b1ac002d: TechDocs now uses a "safe by default" sanitization library, rather than relying on its own, hard-coded list of allowable tags and attributes.
+- Updated dependencies
+  - @backstage/plugin-catalog-react@0.3.2
+
 ## 0.10.1
 
 ### Patch Changes

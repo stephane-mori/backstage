@@ -1,5 +1,14 @@
 # @backstage/plugin-kubernetes
 
+## 0.4.9
+
+### Patch Changes
+
+- 7f24f4088: chore(deps): bump `@kubernetes/client-node` from 0.14.3 to 0.15.0
+- Updated dependencies
+  - @backstage/plugin-kubernetes-common@0.1.3
+  - @backstage/plugin-catalog-react@0.3.2
+
 ## 0.4.8
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @backstage/plugin-catalog-react
 
+## 0.3.2
+
+### Patch Changes
+
+- 043a4238f: Fix `EntityListProvider` to not update url if unmounted
+
 ## 0.3.1
 
 ### Patch Changes
