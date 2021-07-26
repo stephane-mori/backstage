@@ -21,38 +21,71 @@ import { InfoCard } from '@backstage/core-components';
 import { SettingsModal } from './components';
 import { createReactExtension, useApp } from '@backstage/core-plugin-api';
 
-const lazyLoadedComponent = (
-  component: () => Promise<(props: any) => JSX.Element>,
-) => lazy(() => component().then(inner => ({ default: inner })));
+type Component = (props: any) => JSX.Element;
+type ComponentProps = {
+  title?: string;
+};
+type ComponentParts = {
+  Content: React.LazyExoticComponent<Component>;
+  Actions?: React.LazyExoticComponent<Component>;
+  Settings?: React.LazyExoticComponent<Component>;
+  ContextProvider?: React.LazyExoticComponent<Component>;
+};
 
-export function createHomePageComponentExtension({
+type ComponentRenderer = {
+  Renderer?: (props: { title: string } & ComponentParts) => JSX.Element;
+};
+
+const lazyLoadedComponent = (component: () => Promise<Component>) =>
+  lazy(() => component().then(inner => ({ default: inner })));
+
+export function createCardExtension<T>({
   title,
-  component,
+  content,
   actions,
   contextProvider,
   settings,
 }: {
   title: string;
-  component: () => Promise<(props: any) => JSX.Element>;
-  actions?: () => Promise<(props: any) => JSX.Element>;
-  contextProvider?: () => Promise<(props: any) => JSX.Element>;
-  settings?: () => Promise<(props: any) => JSX.Element>;
+  content: () => Promise<Component>;
+  actions?: () => Promise<Component>;
+  contextProvider?: () => Promise<Component>;
+  settings?: () => Promise<Component>;
 }) {
-  const Content = lazyLoadedComponent(component);
-  const Actions = actions ? lazyLoadedComponent(actions) : () => null;
-  const Settings = settings ? lazyLoadedComponent(settings) : () => null;
+  const Content = lazyLoadedComponent(content);
+  const Actions = actions ? lazyLoadedComponent(actions) : null;
+  const Settings = settings ? lazyLoadedComponent(settings) : null;
   const ContextProvider = contextProvider
     ? lazyLoadedComponent(contextProvider)
-    : () => null;
+    : null;
 
-  const HomePageExtension = () => {
+  const CardExtension = ({
+    Renderer,
+    title: overrideTitle,
+    ...childProps
+  }: ComponentRenderer & ComponentProps & T) => {
     const app = useApp();
     const { Progress } = app.getComponents();
     const [settingsOpen, setSettingsOpen] = React.useState(false);
 
+    if (Renderer) {
+      return (
+        <Renderer
+          title={overrideTitle || title}
+          {...{
+            Content,
+            ...(Actions ? { Actions } : {}),
+            ...(Settings ? { Settings } : {}),
+            ...(ContextProvider ? { ContextProvider } : {}),
+          }}
+          {...childProps}
+        />
+      );
+    }
+
     const cardProps = {
-      title,
-      ...(settings
+      title: overrideTitle ?? title,
+      ...(Settings
         ? {
             action: (
               <IconButton onClick={() => setSettingsOpen(true)}>
@@ -61,16 +94,16 @@ export function createHomePageComponentExtension({
             ),
           }
         : {}),
-      ...(actions
+      ...(Actions
         ? {
             actions: <Actions />,
           }
         : {}),
     };
 
-    const content = (
+    const innerContent = (
       <InfoCard {...cardProps}>
-        {settings && (
+        {Settings && (
           <SettingsModal
             open={settingsOpen}
             componentName={title}
@@ -85,10 +118,10 @@ export function createHomePageComponentExtension({
 
     return (
       <Suspense fallback={<Progress />}>
-        {contextProvider ? (
-          <ContextProvider>{content}</ContextProvider>
+        {ContextProvider ? (
+          <ContextProvider {...childProps}>{innerContent}</ContextProvider>
         ) : (
-          content
+          innerContent
         )}
       </Suspense>
     );
@@ -96,7 +129,9 @@ export function createHomePageComponentExtension({
 
   return createReactExtension({
     component: {
-      sync: () => <HomePageExtension />,
+      sync: (props: ComponentRenderer & ComponentProps & T) => (
+        <CardExtension {...props} />
+      ),
     },
   });
 }

@@ -47,15 +47,19 @@ const getNewJoke = (type: string): Promise<Joke> =>
 
 export const ContextProvider = ({
   children,
+  defaultCategory,
 }: {
   children: React.ReactNode;
+  defaultCategory?: JokeType;
 }) => {
   const [loading, setLoading] = React.useState(true);
   const [joke, setJoke] = React.useState<Joke>({
     setup: '',
     punchline: '',
   });
-  const [type, setType] = React.useState<JokeType>('programming' as JokeType);
+  const [type, setType] = React.useState<JokeType>(
+    defaultCategory || ('programming' as JokeType),
+  );
 
   const rerollJoke = React.useCallback(() => {
     setLoading(true);

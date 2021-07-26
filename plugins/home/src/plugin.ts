@@ -17,7 +17,7 @@ import {
   createPlugin,
   createRoutableExtension,
 } from '@backstage/core-plugin-api';
-import { createHomePageComponentExtension } from './extensions';
+import { createCardExtension } from './extensions';
 
 import { rootRouteRef } from './routes';
 
@@ -36,12 +36,10 @@ export const HomeIndexPage = homePlugin.provide(
 );
 
 export const RandomJokeHomePageComponent = homePlugin.provide(
-  createHomePageComponentExtension({
+  createCardExtension<{ defaultCategory?: 'programming' | 'any' }>({
     title: 'Random Joke',
-    component: () =>
-      import('./homePageComponents/RandomJoke/Component').then(
-        m => m.Component,
-      ),
+    content: () =>
+      import('./homePageComponents/RandomJoke/Content').then(m => m.Content),
     actions: () =>
       import('./homePageComponents/RandomJoke/Actions').then(m => m.Actions),
     contextProvider: () =>

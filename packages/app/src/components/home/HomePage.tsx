@@ -18,6 +18,11 @@ import React from 'react';
 import { Content, Header, Page } from '@backstage/core-components';
 import Grid from '@material-ui/core/Grid';
 import { RandomJokeHomePageComponent } from '@backstage/plugin-home';
+import {
+  ComponentAccordion,
+  ComponentTabs,
+  ComponentTab,
+} from './componentRenderers';
 
 export const HomePage = () => {
   return (
@@ -27,6 +32,48 @@ export const HomePage = () => {
         <Grid container spacing={3}>
           <Grid item xs={12} md={4}>
             <RandomJokeHomePageComponent />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <RandomJokeHomePageComponent
+              defaultCategory="any"
+              Renderer={ComponentAccordion}
+            />
+            <RandomJokeHomePageComponent
+              title="Another Random Joke"
+              Renderer={ComponentAccordion}
+            />
+            <RandomJokeHomePageComponent
+              title="One More Random Joke"
+              defaultCategory="programming"
+              Renderer={ComponentAccordion}
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <ComponentTabs
+              title="Random Jokes"
+              tabs={[
+                {
+                  label: 'Programming',
+                  Component: childProps => (
+                    <RandomJokeHomePageComponent
+                      {...childProps}
+                      defaultCategory="programming"
+                      Renderer={ComponentTab}
+                    />
+                  ),
+                },
+                {
+                  label: 'Any',
+                  Component: childProps => (
+                    <RandomJokeHomePageComponent
+                      {...childProps}
+                      defaultCategory="any"
+                      Renderer={ComponentTab}
+                    />
+                  ),
+                },
+              ]}
+            />
           </Grid>
         </Grid>
       </Content>

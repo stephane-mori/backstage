@@ -15,17 +15,22 @@
  */
 
 import React from 'react';
-import { useRandomJoke } from './Context';
 
-export const Component = () => {
-  const { joke, loading } = useRandomJoke();
-
-  if (loading) return <p>Loading...</p>;
-
-  return (
-    <div>
-      <p>{joke.setup}</p>
-      <p>{joke.punchline}</p>
-    </div>
+export const ComponentTab = ({
+  title,
+  Content,
+  ContextProvider,
+  ...childProps
+}: {
+  title: string;
+  Content: React.LazyExoticComponent<(props: any) => JSX.Element>;
+  ContextProvider?: React.LazyExoticComponent<(props: any) => JSX.Element>;
+}) => {
+  return ContextProvider ? (
+    <ContextProvider {...childProps}>
+      <Content />
+    </ContextProvider>
+  ) : (
+    <Content />
   );
 };
